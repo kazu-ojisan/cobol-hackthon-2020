@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<HTML>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>WELCOME TO OUR WEDDING PARTY</title>
+    <style>
+        #allTxt {
+            text-align: center;
+            background: #FEEEED;
+            /* width: 300px; */
+            /* padding: 10px; */
+        }
+        #ttl_wlcm {
+            font-size: 16ex;
+        }
+        #ttl_sub {
+            font-size: 10ex;
+        }
+        input {
+            background: #FFFFFF;
+            width:200px;
+            height:55px;
+        }
+        select {
+            background: #FFFFFF;
+            width:200px;
+            height:55px;
+        }
+        button {
+            background: #FFFFFF;
+            font-size: 8ex;
+        }
+        #formTxt {
+            font-size: 8ex;
+        }
+
+        #Fname {
+            font-size: 30px;
+        }
+        #Lname {
+            font-size: 30px;
+        }
+        #Ybirth {
+            font-size: 30px;
+        }
+        #Mbirth {
+            font-size: 30px;
+        }
+        #Dbirth {
+            font-size: 30px;
+        }
+        #Fname_error {
+            font-size: 20px;
+            color: red;
+        }
+        #Lname_error {
+            font-size: 20px;
+            color: red;
+        }
+        #Ybirth_error {
+            font-size: 20px;
+            color: red;
+        }
+        #Mbirth_error {
+            font-size: 20px;
+            color: red;
+        }
+        #Dbirth_error {
+            font-size: 20px;
+            color: red;
+        }        
+
+
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+</head>
+
+<body>
+    <div id=allTxt>
+        <div>
+            <div id=ttl_wlcm>Welcome</div>
+            <div id=ttl_sub>to Uehara's wedding</div>
+        </div>
+        <div id=formTxt>
+            <br>
+            <p>Please fill out your information in this form and click on send.</p>
+            <form name=inviteeInfo>
+                <div>=== NAME ===</div>
+                <br>              
+                <label for="name">First:</label>
+                <input type="text" id="Fname" name="Fname">
+                <div id=Fname_error></div>
+                <br>
+                <label for="name">Last:</label>
+                <input type="text" id="Lname" name="Lname">
+                <div id=Lname_error></div>
+                <br>
+                <div>=== BIRTH DAY ===</div>
+                <br>
+                <label for="birthDate">Year:</label>
+                <select  id="Ybirth">
+                    <script>
+                    var i;
+                    document.write('<option value="---">---</option>');
+                    for(i=1940; i<=2020; i++){
+                        document.write('<option value="'+i+'">'+i+'</option>');
+                    }
+                    </script>
+                </select>
+                <div id=Ybirth_error></div>
+                <br>
+                <label for="birthDate">Month:</label>
+                <select id="Mbirth">
+                    <script>
+                    var i;
+                    document.write('<option value="---">---</option>');
+                    for(i=1; i<=12; i++){
+                        document.write('<option value="'+i+'">'+i+'</option>');
+                    }
+                    </script>
+                </select>
+                <div id=Mbirth_error></div>
+                <br>
+                <label for="birthDate">Day:</label>
+                <select id="Dbirth">
+                    <script>
+                    var i;
+                    document.write('<option value="---">---</option>');
+                    for(i=1; i<=31; i++){
+                        document.write('<option value="'+i+'">'+i+'</option>');
+                    }
+                    </script>
+                </select>
+                <div id=Dbirth_error></div>
+            </form>
+        </div>
+        <br>
+        <div id=btn>
+            <table border=0>
+                <tr>
+                    <td></td>
+                    <td><button id='send'>Send</button></td>
+                    <td><button id='retry'>Retry</button></td>
+                </tr>
+            </table>
+        </div>
+            
+        <br>
+        <div id='result'></div>
+    </div>
+    <script type="text/javascript">
+        $(function() {
+
+            var URL = 'https://nhc7ph7oje.execute-api.ap-northeast-1.amazonaws.com/cbl_hack/checkinfo';
+            var dummyStr = '-';
+            var dummyZero = '0';
+            var nameBitNum = 10;
+
+            $("#send").click(function() {
+                var Fname = document.getElementById('Fname').value;
+                var Lname = document.getElementById('Lname').value;
+                var Ybirth = document.getElementById('Ybirth').value;
+                var Mbirth = document.getElementById('Mbirth').value;
+                var Dbirth = document.getElementById('Dbirth').value;
+                var errFlag = 0;
+                // スペースを含んでいる場合、削除
+                Fname = Fname.replace(/\s+/g, '').toLowerCase();
+                Lname = Lname.replace(/\s+/g, '').toLowerCase();
+
+                // 例外処理：空白もしくはスペースのみ
+                if (Fname==""){
+                    Fname_error.innerHTML = 'Please input your First Name';
+                    errFlag = 1;
+                }else{
+                    Fname_error.innerHTML = "";
+                }
+                if (Lname==""){
+                    Lname_error.innerHTML = 'Please input your Last Name';
+                    errFlag = 1;
+                }else{
+                    Lname_error.innerHTML = "";
+                }
+                if (Ybirth=="---"){
+                    Ybirth_error.innerHTML = 'Please choose your Birth Year';
+                    errFlag = 1;
+                }else{
+                    Ybirth_error.innerHTML = "";
+                }
+                if (Mbirth=="---"){
+                    Mbirth_error.innerHTML = 'Please choose your Birth Month';
+                    errFlag = 1;
+                }else{
+                    Mbirth_error.innerHTML = "";
+                }
+                if (Dbirth=="---"){
+                    Dbirth_error.innerHTML = 'Please choose your Birth Day';
+                    errFlag = 1;
+                }else{
+                    Dbirth_error.innerHTML = "";
+                }
+
+                if (errFlag == 0){
+
+                    // Cobol入力用にデータを連結・加工
+                    Fname += dummyStr.repeat(nameBitNum - Fname.length);
+                    Lname += dummyStr.repeat(nameBitNum - Lname.length);
+
+                    if (Mbirth.length == 1) {
+                        Mbirth = dummyZero + Mbirth;
+                    } 
+                    if (Dbirth.length == 1) {
+                        Dbirth = dummyZero + Dbirth;
+                    }               
+
+                    var inputData = '{"info":"'+Fname+Lname+Ybirth+Mbirth+Dbirth+'"}';
+                    console.log(inputData);
+
+                    $("#send").removeAttr("disabled", "disabled");
+
+                    $.ajax({
+                        type: "POST",
+                        url: URL,
+                        dataType: "json",
+                        headers: {
+                            "x-api-key": '5CCinDxWfh9a2D8kkiLBX3X3QXMXTbPW5qGlNQyX'
+                        },
+                        data: inputData,
+                        error: function() {
+                            alert('ERROR: EXE');
+                            $("#send").attr("disabled");
+                        },
+                        success: function(res) {
+                            if (res.return_code==0){
+                                // alert('SUCCESS!');
+                                result.innerHTML = '<font size="12ex">Welcome '+res.input.FIRST_NAME.toUpperCase()+' to our wedding!</font>';
+                            }else{
+                                // alert('FAILED...');
+                                result.innerHTML = '<font size="10ex" color="red">Try again...</font>';
+                            }
+                            
+                            $("#send").attr("disabled");
+                            console.log(res)
+                        }
+                    });
+                };
+            });
+
+            $("#retry").click(function()   {
+                document.inviteeInfo.reset();
+                result.innerHTML = "";
+                Fname_error.innerHTML = "";
+                Lname_error.innerHTML = "";
+                Ybirth_error.innerHTML = "";
+                Mbirth_error.innerHTML = "";
+                Dbirth_error.innerHTML = "";
+                $("#send").removeAttr("disabled", "disabled");
+            });
+        });
+    </script>
+
+</body>
+
+</HTML>
